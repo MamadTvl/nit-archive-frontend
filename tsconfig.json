@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "jsxImportSource": "@emotion/react",
+        "incremental": true,
+        // Using "baseUrl" allows you to use absolute paths
+        "baseUrl": ".",
+        // Using "paths" allows you to configure module path aliases
+        "paths": {
+            "@/components/*": ["src/components/*"],
+            "@/theme/*": ["src/theme/*"],
+            "@icons": ["src/icons/components/index"],
+            "@/svg/*": ["src/icons/svg/*"],
+            "@/api/*": ["src/api/*"],
+            "@/utils/*": ["src/utils/*"],
+            "@/assets/*": ["src/assets/*"],
+            "@types": ["src/types/index"]
+        }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules"]
+}
