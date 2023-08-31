@@ -21,15 +21,11 @@ const DashboardCourseBox: React.FC<DashboardCourseBoxProps> = ({ course }) => {
                 <Box display={'flex'} alignItems={'center'}>
                     {course ? (
                         <>
-                            <Link
-                                href={`/video/${course.last_authenticated_user_video.slug}`}>
+                            <Link href={`/course/${course.slug}`}>
                                 <Image
                                     width={64}
                                     height={64}
-                                    src={
-                                        course.media_urls.featured_images
-                                            ?.main || ''
-                                    }
+                                    src={course.media.featuredUri || '/not-found'}
                                     alt={''}
                                     objectFit={'cover'}
                                     className={'image-border'}
@@ -115,7 +111,7 @@ const DashboardCourseBox: React.FC<DashboardCourseBoxProps> = ({ course }) => {
                 {course ? (
                     <>
                         <Link
-                            href={`/video/${course.last_authenticated_user_video.slug}`}>
+                            href={`/course/${course.slug}`}>
                             <Button
                                 sx={{
                                     height: { xs: 32, sm: 44 },
@@ -146,5 +142,5 @@ const DashboardCourseBox: React.FC<DashboardCourseBoxProps> = ({ course }) => {
 export default DashboardCourseBox;
 
 export interface DashboardCourseBoxProps {
-    course?: Course & { last_authenticated_user_video: Video };
+    course?: Course;
 }

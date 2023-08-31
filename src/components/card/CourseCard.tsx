@@ -1,7 +1,5 @@
 import { Box, Divider, Paper, Typography } from '@mui/material';
 import Image from 'next/image';
-import { CourseStatus } from '../../types';
-import { separateDigit } from '../../utils/convertDigits';
 import Avatar from '../avatar/Avatar';
 import CourseChip from '../chip/CourseChip';
 import ClockIcon from '../icons/ClockIcon';
@@ -11,7 +9,7 @@ import { CourseCardProps } from './types';
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, paperProps, sx }) => {
     return (
-        <Link disabled={course.status.id === 1} href={`/course/${course.slug}`}>
+        <Link disabled={course.isActive} href={`/course/${course.slug}`}>
             <Paper
                 sx={[
                     {

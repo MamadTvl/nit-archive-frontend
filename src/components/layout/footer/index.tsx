@@ -4,9 +4,8 @@ import Info from './items/Info';
 import License from './items/License';
 import LinkAccordion from './items/LinkAccordion';
 import LinkBox, { LinkBoxProps } from './items/LinkBox';
-import { useUser } from '../../user/context/UserContext';
-import { showLoginDialog } from '../../user/context/action';
 import { useMemo } from 'react';
+import { useUserStore } from '@/components/user/store/store';
 
 const links: LinkBoxProps[] = [
     {
@@ -62,21 +61,24 @@ const licenses: ImageProps[] = [
     },
 ];
 const Footer = () => {
-    const { store, dispatch } = useUser();
+    const [user, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.openLoginDialog,
+    ]);
     const linkItems: LinkBoxProps[] = useMemo(() => {
         return [
             ...links,
             {
                 title: 'کاربران',
                 links: [
-                    store.isLoggedIn
+                    user
                         ? {
                               href: '/dashboard/my-courses',
                               text: 'دوره های من',
                           }
                         : {
                               action: () => {
-                                  dispatch(showLoginDialog(true));
+                                  openLoginDialog(true);
                               },
                               text: 'ورود یا ثبت‌نام',
                           },
@@ -87,7 +89,7 @@ const Footer = () => {
                 ],
             },
         ];
-    }, [dispatch, store.isLoggedIn]);
+    }, [user, openLoginDialog]);
     return (
         <Box
             sx={(theme) => ({

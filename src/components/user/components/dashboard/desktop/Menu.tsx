@@ -8,7 +8,7 @@ import ExitIcon from '../../../../icons/ExitIcon';
 import { DashboardItem } from '../types';
 import UserBox from '../UserBox';
 import ItemBox from '../ItemBox';
-import useLogout from '../../../hooks/useLogout';
+import { useUserStore } from '@/components/user/store/store';
 
 interface MenuProps {
     boxProps?: BoxProps;
@@ -16,7 +16,7 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ sx, boxProps }) => {
-    const { mutate } = useLogout();
+    const logout = useUserStore((s) => s.logout);
     const dashboardItems: DashboardItem[] = [
         {
             title: 'دوره‌های من',
@@ -31,7 +31,7 @@ const Menu: React.FC<MenuProps> = ({ sx, boxProps }) => {
         {
             title: 'خروج از حساب',
             icon: <ExitIcon />,
-            action: () => mutate(true),
+            action: logout,
         },
     ];
     return (

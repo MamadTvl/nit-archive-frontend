@@ -2,38 +2,31 @@ import { IconButton, Skeleton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useMemo } from 'react';
 import EditIcon from '../../../../icons/EditIcon';
-import { useUser } from '../../../context/UserContext';
 import { InfoBoxProps, UserInfoType } from '../types';
+import useSwr from 'swr';
+import { Api } from '@/api/index';
 
 const InfoBox: React.FC<InfoBoxProps> = ({ title, editable, onEdit, type }) => {
-    const { store } = useUser();
+    const { data: info, isLoading } = useSwr('my-info', () =>
+        Api.Instance.getUserInfo()
+    );
 
     const data = useMemo(() => {
-        if (!store.isLoading && store.isLoggedIn) {
-            switch (type) {
-                case UserInfoType.NAME:
-                    return `${store.user?.first_name || ''} ${
-                        store.user?.last_name || ''
-                    }`;
-                case UserInfoType.EMAIL:
-                    return store.user?.email || null;
-                case UserInfoType.PHONE:
-                    return store.user?.phone || null;
-                case UserInfoType.PASSWORD:
-                    return '********';
-            }
-        } else {
+        if (!info) {
             return undefined;
         }
-    }, [
-        store.isLoading,
-        store.isLoggedIn,
-        store.user?.email,
-        store.user?.first_name,
-        store.user?.last_name,
-        store.user?.phone,
-        type,
-    ]);
+        const user = info.user;
+        switch (type) {
+            case UserInfoType.NAME:
+                return `${user.firstName || ''} ${user?.lastName || ''}`;
+            case UserInfoType.EMAIL:
+                return user.email || null;
+            case UserInfoType.PHONE:
+                return user.phone || null;
+            case UserInfoType.PASSWORD:
+                return '********';
+        }
+    }, [info, type]);
 
     return (
         <Box
@@ -56,7 +49,7 @@ const InfoBox: React.FC<InfoBoxProps> = ({ title, editable, onEdit, type }) => {
                 <Typography variant='body1' color='text.dark'>
                     {title}
                 </Typography>
-                {store.isLoading || !store.isLoggedIn ? (
+                {isLoading ? (
                     <Skeleton width={40} height={16} />
                 ) : (
                     <Typography variant='body1' color='text.primary'>

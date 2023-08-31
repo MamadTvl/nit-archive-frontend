@@ -101,6 +101,7 @@ export type CourseStatus = {
 
 export interface User {
     id: number;
+    username: string;
     firstName: string;
     lastName: string;
     media: {
@@ -124,7 +125,8 @@ export interface Course {
     };
     duration: number;
     videosCount: number;
-    status: CourseStatus;
+    status: CourseStatus | null;
+    isActive: boolean;
     createdAt: Date | null;
     updatedAt: Date | null;
     averageRating: number;

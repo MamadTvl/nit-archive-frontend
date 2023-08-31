@@ -1,12 +1,14 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { UserActionProps } from '../../UserAction';
 import Avatar from '../../../../avatar/Avatar';
-import { useUser } from '../../../context/UserContext';
-import { showLoginDialog } from '../../../context/action';
 import CartButton from '../../cart/CartButton';
+import { useUserStore } from '@/components/user/store/store';
 
 const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
-    const { store, dispatch } = useUser();
+    const [user, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.openLoginDialog,
+    ]);
     return (
         <Box
             sx={(theme) => ({
@@ -16,10 +18,9 @@ const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
                     alignItems: 'center',
                 },
             })}>
-
             <Box
                 onClick={() => {
-                    dispatch(showLoginDialog(true));
+                    openLoginDialog(true);
                 }}
                 display={'flex'}
                 alignItems={'center'}
@@ -34,7 +35,7 @@ const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
                 ) : (
                     <Avatar
                         imageProps={{
-                            src: store.user?.media.avatarUri ?? '/not-found',
+                            src: user?.media.avatarUri ?? '/not-found',
                             alt: '',
                             width: 20,
                             height: 20,

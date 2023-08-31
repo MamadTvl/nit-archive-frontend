@@ -2,24 +2,24 @@ import { Backdrop, Button, Divider } from '@mui/material';
 import { Box } from '@mui/system';
 import { Dispatch, SetStateAction } from 'react';
 import CourseIcon from '../../../../icons/CourseIcon';
-import BlogIcon from '../../../../icons/BlogIcon';
 import InfoIcon from '../../../../icons/InfoIcon';
 import ExitIcon from '../../../../icons/ExitIcon';
 import PlaylistIcon from '../../../../icons/PlaylistIcon';
-import { useUser } from '../../../context/UserContext';
 import { DashboardItem } from '../types';
 import UserBox from '../UserBox';
 import HandshakeIcon from '../../../../icons/HandshakeIcon';
 import PhoneIcon from '../../../../icons/PhoneIcon';
 import ItemBox from '../ItemBox';
 import SkipIcon from '../../../../icons/SkipIcon';
-import { showLoginDialog } from '../../../context/action';
 import Link from '../../../../link/Link';
-import useLogout from '../../../hooks/useLogout';
+import { useUserStore } from '@/components/user/store/store';
 
 const Menu: React.FC<Props> = ({ open, setOpen }) => {
-    const { store, dispatch } = useUser();
-    const { mutate } = useLogout();
+    const [user, logout, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.logout,
+        s.openLoginDialog,
+    ]);
     const authorizedDashboardItems: DashboardItem[] = [
         {
             title: 'دوره‌های من',
@@ -59,7 +59,7 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
         title: 'خروج از حساب',
         icon: <ExitIcon />,
         action: () => {
-            mutate(true);
+            logout();
             setOpen(false);
         },
     };
@@ -115,11 +115,11 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
                     transformOrigin: 'top right',
                 }}
                 style={{
-                    height: store.isLoggedIn ? 418 : 249,
+                    height: user ? 418 : 249,
                     visibility: open ? 'visible' : 'hidden',
                     transform: open ? 'scale(1)' : 'scale(0)',
                 }}>
-                {store.isLoggedIn ? (
+                {user ? (
                     <UserBox />
                 ) : (
                     <Box
@@ -129,7 +129,7 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
                         <Button
                             onClick={() => {
                                 setOpen(false);
-                                dispatch(showLoginDialog(true));
+                                openLoginDialog(true);
                             }}
                             sx={{ width: 100, height: 32, borderRadius: 1 }}
                             variant={'contained'}
@@ -139,7 +139,7 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
                         <Button
                             onClick={() => {
                                 setOpen(false);
-                                dispatch(showLoginDialog(true));
+                                openLoginDialog(true);
                             }}
                             sx={{ width: 100, height: 32, borderRadius: 1 }}
                             variant={'outlined'}
@@ -154,7 +154,7 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
                         mt: '-10px',
                     }}
                 />
-                {store.isLoggedIn && (
+                {user && (
                     <>
                         {authorizedDashboardItems.map((item, index) => (
                             <Link key={index} href={item.href || ''}>
@@ -173,7 +173,7 @@ const Menu: React.FC<Props> = ({ open, setOpen }) => {
                         <ItemBox item={item} />
                     </Link>
                 ))}
-                {store.isLoggedIn && (
+                {user && (
                     <>
                         <Divider
                             sx={{

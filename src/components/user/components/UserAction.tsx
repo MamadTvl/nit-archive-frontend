@@ -1,26 +1,33 @@
-import { useMemo } from 'react';
-import { useUser } from '../context/UserContext';
-import { getCookie } from '../../../utils/cookie';
+import { useEffect, useMemo } from 'react';
 import DesktopUserAction from './user-action/desktop';
 import MobileUserAction from './user-action/mobile';
+import { useUserStore } from '../store/store';
+import { Api } from '@/api/index';
 
 export type loginButtonStateType = 'login' | 'logout' | 'loading';
 
 const UserAction = () => {
-    const { store } = useUser();
+    const [user, setUser, loading] = useUserStore((s) => [
+        s.user,
+        s.setUser,
+        s.loading,
+    ]);
     const loginButtonState: loginButtonStateType = useMemo(() => {
-        let token;
-        if (typeof document !== 'undefined') {
-            token = getCookie('shenovid-token', document.cookie);
+        if (loading) {
+            return 'loading';
         }
-        if (!token || (!store.isLoggedIn && !store.isLoading)) {
-            return 'logout';
-        }
-        if (store.isLoggedIn && !store.isLoading) {
+        if (user) {
             return 'login';
         }
-        return 'loading';
-    }, [store.isLoggedIn, store.isLoading]);
+        return 'logout';
+    }, [user, loading]);
+
+    useEffect(() => {
+        setUser();
+        Api.Instance.getUserCourses().then((c) => {
+            console.log(c);
+        });
+    }, [setUser]);
 
     return (
         <>

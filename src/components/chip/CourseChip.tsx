@@ -5,7 +5,7 @@ import { CourseStatus } from '../../types';
 import ComingSoonIcon from '../icons/ComingSoonIcon';
 import Image from 'next/image';
 
-const CourseChip: React.FC<{ status: CourseStatus; sx?: SxProps<Theme> }> = ({
+const CourseChip: React.FC<{ status: CourseStatus | null; sx?: SxProps<Theme> }> = ({
     status,
     sx,
 }) => {

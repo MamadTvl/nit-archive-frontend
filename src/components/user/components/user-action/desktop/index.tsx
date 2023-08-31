@@ -1,13 +1,15 @@
 import { Box, Button, CircularProgress } from '@mui/material';
 import ProfileIcon from '../../../../icons/ProfileIcon';
-import { useUser } from '../../../context/UserContext';
 import DownArrowIcon from '../../../../icons/DownArrowIcon';
-import { showLoginDialog } from '../../../context/action';
 import Menu from '../../dashboard/desktop/Menu';
 import { UserActionProps } from '../../UserAction';
+import { useUserStore } from '@/components/user/store/store';
 
 const DesktopUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
-    const { store, dispatch } = useUser();
+    const [user, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.openLoginDialog,
+    ]);
     const menuStyle: React.CSSProperties | undefined =
         loginButtonState !== 'login'
             ? {
@@ -29,7 +31,7 @@ const DesktopUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
             {loginButtonState === 'logout' ? (
                 <Button
                     onClick={() => {
-                        dispatch(showLoginDialog(true));
+                        openLoginDialog(true);
                     }}
                     variant='text'
                     sx={{ color: 'text.secondary', mr: 0.5, typography: 'h6' }}>
@@ -80,7 +82,7 @@ const DesktopUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
                         {loginButtonState === 'loading' ? (
                             <CircularProgress color={'primary'} size={21} />
                         ) : (
-                            store.user?.firstName || 'پروفایل'
+                            user?.firstName || 'پروفایل'
                         )}
                         <DownArrowIcon />
                         <Box

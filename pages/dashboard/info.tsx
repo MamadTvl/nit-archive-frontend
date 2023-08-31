@@ -4,22 +4,29 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import Section from '../../src/components/layout/section/Section';
 import Wall from '../../src/components/layout/utils/Wall';
-import { showLoginDialog } from '../../src/components/user/context/action';
-import { useUser } from '../../src/components/user/context/UserContext';
 import Title from '../../src/components/title/Title';
 import {
     InfoBoxProps,
     UserInfoType,
 } from '../../src/components/user/components/dashboard/types';
 import InfoBox from '../../src/components/user/components/dashboard/info/InfoBox';
+import { useUserStore } from '@/components/user/store/store';
 
 const Info: NextPage<InfoProps> = ({ title }) => {
-    const { store, dispatch } = useUser();
+    const [user, loading, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.loading,
+        s.openLoginDialog,
+    ]);
+
     useEffect(() => {
-        if (!store.isLoading && !store.isLoggedIn) {
-            dispatch(showLoginDialog(true));
+        if (loading) {
+            return;
         }
-    }, [dispatch, store.isLoading, store.isLoggedIn]);
+        if (!user) {
+            openLoginDialog(true);
+        }
+    }, [loading, openLoginDialog, user]);
 
     const items: InfoBoxProps[] = [
         {

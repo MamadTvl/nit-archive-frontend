@@ -1,34 +1,15 @@
 import { Grid } from '@mui/material';
 import { GetStaticProps, GetStaticPropsResult, NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import useSWR from 'swr';
-import MetaBox from '../../src/components/box/MetaBox';
 import Section from '../../src/components/layout/section/Section';
 import Wall from '../../src/components/layout/utils/Wall';
 import DashboardCourseBox from '../../src/components/user/components/dashboard/my-courses/DashboardCourseBox';
-import { showLoginDialog } from '../../src/components/user/context/action';
-import { useUser } from '../../src/components/user/context/UserContext';
 import { Course, Video } from '../../src/types';
-import axios from '../../src/utils/axios';
-import { getCookie } from '../../src/utils/cookie';
-import CourseCollection from '../../src/components/course/collection/CourseCollection';
 import Title from '../../src/components/title/Title';
-
-const fetcher = async (url: string): Promise<ApiResult> => {
-    let token = getCookie('shenovid-token', document.cookie);
-    if (token === '') {
-        return Promise.reject(new Error('No token found'));
-    }
-    return axios
-        .get<ApiResult>(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        .then((res) => res.data);
-};
+import { useUserStore } from '@/components/user/store/store';
+import { Api } from '@/api/index';
 
 interface ApiResult {
     courses: Array<Course & { last_authenticated_user_video: Video }>;
@@ -36,15 +17,24 @@ interface ApiResult {
 }
 
 const MyCourses: NextPage<MyCoursesProps> = ({ title, meta }) => {
-    const { dispatch } = useUser();
-    const router = useRouter();
-    const { data, error } = useSWR<ApiResult>('/dashboard/courses', fetcher);
+    const [user, loading, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.loading,
+        s.openLoginDialog,
+    ]);
+    const { data: myCourses, isLoading } = useSWR(
+        'my-courses',
+        () => Api.Instance.getUserCourses()
+    );
 
     useEffect(() => {
-        if (error) {
-            dispatch(showLoginDialog(true));
+        if (loading) {
+            return;
         }
-    }, [dispatch, error, router]);
+        if (!user) {
+            openLoginDialog(true);
+        }
+    }, [loading, openLoginDialog, user]);
 
     return (
         <>
@@ -69,52 +59,20 @@ const MyCourses: NextPage<MyCoursesProps> = ({ title, meta }) => {
                         <Title sx={{ mb: 0 }} title={title} />
                     </Grid>
                     <Grid item xs={12} container spacing={2}>
-                        {data?.courses.map((course, index) => {
+                        {myCourses?.map((course, index) => {
                             return (
                                 <Grid item xs={12} key={index}>
                                     <DashboardCourseBox course={course} />
                                 </Grid>
                             );
                         })}
-                        {!data &&
+                        {isLoading &&
                             Array.from({ length: 1 }).map((_, index) => (
                                 <Grid item xs={12} key={index}>
                                     <DashboardCourseBox />
                                 </Grid>
                             ))}
                     </Grid>
-                </Grid>
-            </Section>
-            <Section
-                sx={{
-                    maxWidth: '744px!important',
-                    pl: '0px!important',
-                    pr: '0px!important',
-                    m: 'auto',
-                }}>
-                <Title title={'دوره‌های پیشنهادی'} />
-                <CourseCollection courses={data?.popularCourses} />
-            </Section>
-            <Section
-                sx={{
-                    maxWidth: '744px!important',
-                    pl: '0px!important',
-                    pr: '0px!important',
-                    m: 'auto',
-                    pt: {
-                        xs: 0,
-                        sm: 7.5,
-                    },
-                    pb: 8.75,
-                }}
-                boxProps={{ position: 'relative' }}>
-                <Wall />
-                <Grid container spacing={{ xs: 4, sm: 1 }}>
-                    {meta.map((item, index) => (
-                        <Grid item xs={12} sm={4} key={index}>
-                            <MetaBox sx={{ maxWidth: 'unset' }} meta={item} />
-                        </Grid>
-                    ))}
                 </Grid>
             </Section>
         </>

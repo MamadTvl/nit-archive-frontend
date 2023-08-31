@@ -12,7 +12,6 @@ import '../styles/globals.css';
 import '../styles/font.css';
 import '../styles/video.css';
 import '../styles/nprogress.css';
-import ProvideUser from '../src/components/user/context/UserContext';
 import { SnackbarProvider } from 'notistack';
 import Script from 'next/script';
 
@@ -94,21 +93,19 @@ export default function MyApp(props: MyAppProps) {
             <ThemeProvider>
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline />
-                <ProvideUser>
-                    {/* @ts-ignore*/}
-                    <SnackbarProvider
-                        preventDuplicate
-                        maxSnack={3}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}>
-                        <Layout>
-                            {/* @ts-ignore */}
-                            <Component {...pageProps} />
-                        </Layout>
-                    </SnackbarProvider>
-                </ProvideUser>
+                {/* @ts-ignore*/}
+                <SnackbarProvider
+                    preventDuplicate
+                    maxSnack={3}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}>
+                    <Layout>
+                        {/* @ts-ignore */}
+                        <Component {...pageProps} />
+                    </Layout>
+                </SnackbarProvider>
             </ThemeProvider>
         </>
     );

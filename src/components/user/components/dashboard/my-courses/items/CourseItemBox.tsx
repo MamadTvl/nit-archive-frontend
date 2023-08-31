@@ -22,8 +22,8 @@ const CourseItemBox: React.FC<{
                     color={'text.secondary'}
                     variant='body2'>
                     {item === 'duration'
-                        ? `${Math.round(course.length / 3600)} ساعت`
-                        : `${course.videos_count} ویدیو`}
+                        ? `${Math.round(course.duration / 3600)} ساعت`
+                        : `${course.videosCount} ویدیو`}
                 </Typography>
             </>
         ) : (

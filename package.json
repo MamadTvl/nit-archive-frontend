@@ -14,6 +14,8 @@
     "@emotion/react": "^11.9.0",
     "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.8.1",
+    "@mantine/form": "^6.0.19",
+    "@mantine/hooks": "^6.0.19",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.6.4",
     "@types/videojs-contrib-quality-levels": "^2.0.1",
@@ -33,7 +35,8 @@
     "video.js": "^7.18.1",
     "videojs-contrib-quality-levels": "^2.1.0",
     "videojs-hls-quality-selector": "^1.1.4",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@types/leaflet": "^1.7.11",

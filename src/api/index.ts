@@ -21,6 +21,9 @@ export const Endpoints = {
         register: 'user/sign-up',
         login: 'user/login',
         update: 'user',
+        courses: 'user/courses',
+        info: 'user/personal-info',
+        subscribe: 'user/subscribe',
         logout: 'user/logout',
     },
 };
@@ -102,6 +105,17 @@ type AddRatingDto = {
     courseId: number;
 };
 
+type GetUserInfoResponse = {
+    message: string;
+    user: {
+        username: string;
+        firstName: string | null;
+        lastName: string | null;
+        phone: string | null;
+        email: string | null;
+    };
+};
+
 export class Api {
     private static _instance: Api;
     private constructor() {}
@@ -149,7 +163,9 @@ export class Api {
         return {
             ...user,
             media: {
-                avatarUri: dlBaseUrl + user.media.avatarUri,
+                avatarUri: user.media.avatarUri
+                    ? dlBaseUrl + user.media.avatarUri
+                    : null,
             },
         };
     }
@@ -163,10 +179,14 @@ export class Api {
                 coverUri: dlBaseUrl + data.media.coverUri,
                 featuredUri: dlBaseUrl + data.media.featuredUri,
             },
-            status: {
-                ...data.status,
-                iconSrc: dlBaseUrl + data.status.iconSrc,
-            },
+            ...(data.status
+                ? {
+                      status: {
+                          ...data.status,
+                          iconSrc: dlBaseUrl + data.status.iconSrc,
+                      },
+                  }
+                : {}),
             instructor: data.instructor
                 ? this.userInterceptor(data.instructor)
                 : null,
@@ -289,14 +309,36 @@ export class Api {
             .catch(() => null);
     }
 
+    async getUserCourses() {
+        const url = this.getUrl((e) => e.user.courses, {});
+        return this.fetcher<{ message: string; courses: Course[] }>(url, true)
+            .then((r) => r.courses.map((c) => this.courseInterceptor(c)))
+            .catch(() => []);
+    }
+
+    async getUserInfo() {
+        const url = this.getUrl((e) => e.user.info, {});
+        return this.fetcher<GetUserInfoResponse>(url, true);
+    }
+
+    async subscribeToCourse(courseId: number) {
+        const url = this.getUrl((e) => e.user.subscribe, {
+            slug: courseId.toString(),
+        });
+        return axios(url, {
+            method: 'POST',
+            headers: {
+                Authorization: getToken(),
+            },
+        });
+    }
+
     async login(dto: LoginDto) {
         const url = this.getUrl((e) => e.user.login, {});
         return axios<LoginResponse>(url, {
             method: 'POST',
             data: dto,
-        })
-            .then((r) => r.data)
-            .catch((e) => e.response.data);
+        });
     }
 
     async singUp(dto: LoginDto) {
@@ -310,7 +352,7 @@ export class Api {
     async logout() {
         const url = this.getUrl((e) => e.user.logout, {});
         return axios(url, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 Authorization: getToken(),
             },

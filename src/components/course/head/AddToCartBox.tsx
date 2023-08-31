@@ -5,42 +5,16 @@ import {
     Skeleton,
     Typography,
 } from '@mui/material';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useRouter } from 'next/router';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { CourseProps } from '../../../../pages/course/[course-slug]';
-import usePost from '../../../hooks/usePost';
 import { Course, UserRate, Video } from '../../../types';
-import axios from '../../../utils/axios';
-import { separateDigit } from '../../../utils/convertDigits';
-import { getCookie } from '../../../utils/cookie';
-import PriceIcon from '../../icons/PriceIcon';
-import { setCart } from '../../user/context/action';
-import { AddToCartApiBody, AddToCartApiResult } from '../../user/context/types';
-import { useUser } from '../../user/context/UserContext';
-import getConfig from 'next/config';
+
 import TikIcon from '../../icons/TikIcon';
 import Link from '../../link/Link';
 import { useSnackbar } from 'notistack';
 import { Api } from '@/api/index';
-
-const { publicRuntimeConfig } = getConfig();
-
-const fetcher = async (url: string): Promise<AuthCourseApiResult> => {
-    const token = getCookie('shenovid-token', document.cookie);
-    if (token === '') {
-        throw Error('No token found');
-    }
-    try {
-        const response: AxiosResponse<AuthCourseApiResult> = await axios(url, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
-        return response.data;
-    } catch (e) {
-        throw e;
-    }
-};
+import { useUserStore } from '@/components/user/store/store';
 
 const AddToCartBox: React.FC<Props> = ({
     cartButtonText,
@@ -49,14 +23,16 @@ const AddToCartBox: React.FC<Props> = ({
     fixed = false,
 }) => {
     const { enqueueSnackbar } = useSnackbar();
-    const { store, dispatch } = useUser();
-    const { isLoading: authLoading, isLoggedIn } = store;
-    const router = useRouter();
+    const [user, openLoginDialog] = useUserStore((s) => [
+        s.user,
+        s.openLoginDialog,
+    ]);
     const accessUrl = Api.Instance.getUrl((e) => e.course.checkAccess, {
         slug: course.id.toString(),
     });
     const {
         data: hasAccess,
+        mutate,
         error,
         isLoading,
     } = useSWR<boolean>(accessUrl, () =>
@@ -72,6 +48,24 @@ const AddToCartBox: React.FC<Props> = ({
         }
         return hasAccess ? 'owns' : 'not_owns';
     }, [hasAccess, error, isLoading]);
+
+    const handleSubscription = () => {
+        if (!user) {
+            openLoginDialog(true);
+            return;
+        }
+        setLoading(true);
+        Api.Instance.subscribeToCourse(course.id)
+            .then(() => {
+                mutate();
+            })
+            .catch(() => {
+                enqueueSnackbar('server error', { variant: 'error' });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
 
     return (
         <Box
@@ -166,10 +160,10 @@ const AddToCartBox: React.FC<Props> = ({
             )}
             {userCourseStatus === 'not_owns' && (
                 <Button
-                    // onClick={}
+                    onClick={handleSubscription}
                     color={'secondary'}
                     variant='contained'
-                    disabled={loading || authLoading}
+                    disabled={loading}
                     sx={{ height: fixed ? 48 : 61 }}>
                     {loading ? (
                         <CircularProgress color='secondary' size={36} />

@@ -12,7 +12,6 @@ const CoursesSlider: React.FC<{
     title: string;
     wall?: boolean;
 }> = ({ courses, title, wall = false }) => {
-    console.log(courses);
     
     return (
         <Box
