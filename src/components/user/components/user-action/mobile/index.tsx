@@ -1,7 +1,6 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { UserActionProps } from '../../UserAction';
 import Avatar from '../../../../avatar/Avatar';
-import CartButton from '../../cart/CartButton';
 import { useUserStore } from '@/components/user/store/store';
 
 const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {

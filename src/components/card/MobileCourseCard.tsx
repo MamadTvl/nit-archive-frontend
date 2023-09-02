@@ -15,7 +15,7 @@ const MobileCourseCard: React.FC<CourseCardProps> = ({
     sx,
 }) => {
     return (
-        <Link disabled={course.status.id === 1} href={`/course/${course.slug}`}>
+        <Link disabled={!course.isActive} href={`/course/${course.slug}`}>
             <Paper
                 sx={[
                     {

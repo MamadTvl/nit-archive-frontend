@@ -17,7 +17,7 @@ import RatingTable from '../../src/components/rating/RatingTable';
 import Section from '../../src/components/layout/section/Section';
 import React from 'react';
 import { CoursesApiResult } from '../courses';
-import RateInput from '../../src/components/rating/input/RateInput';
+// import RateInput from '../../src/components/rating/input/RateInput';
 import useSWR from 'swr';
 import { AuthCourseApiResult } from '../../src/components/course/head/AddToCartBox';
 import { Api } from '@/api/index';
