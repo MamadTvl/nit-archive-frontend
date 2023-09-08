@@ -9,7 +9,7 @@ import { CourseCardProps } from './types';
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, paperProps, sx }) => {
     return (
-        <Link disabled={course.isActive} href={`/course/${course.slug}`}>
+        <Link disabled={!course.isActive} href={`/course/${course.slug}`}>
             <Paper
                 sx={[
                     {
@@ -38,6 +38,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, paperProps, sx }) => {
                     src={course.media.featuredUri ?? '/not-found'}
                     alt={course.title}
                     width={222}
+                    objectFit='contain'
                     height={126}
                     className={'image-border'}
                 />

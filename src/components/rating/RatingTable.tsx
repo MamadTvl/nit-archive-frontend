@@ -92,7 +92,7 @@ const RatingTable: React.FC<{
                                                 <Typography
                                                     variant='subtitle2'
                                                     color={'text.dark'}>
-                                                    {rate.percentage.toFixed(0)}
+                                                    {rate.percentage?.toFixed(0) || 0}
                                                     %
                                                 </Typography>
                                             </Box>

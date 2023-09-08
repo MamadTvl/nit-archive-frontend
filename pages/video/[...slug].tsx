@@ -23,6 +23,7 @@ import axios from '../../src/utils/axios';
 import { getCookie } from '../../src/utils/cookie';
 import Image from 'next/image';
 import { Api } from '@/api/index';
+import React from 'react';
 
 const Player = dynamic(
     () => import('../../src/components/player/components/Player'),
@@ -97,6 +98,11 @@ const VideoPage: NextPage<VideoProps> = (props) => {
                                     '/not-found'
                                 }
                             />
+                        ) : data?.aparatIframe ? (
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: data.aparatIframe,
+                                }}></div>
                         ) : isLoading ? (
                             <VideoSkeleton />
                         ) : (

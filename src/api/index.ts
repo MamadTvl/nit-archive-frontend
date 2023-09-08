@@ -217,8 +217,8 @@ export class Api {
         return {
             ...data,
             media: {
-                coverUri: '/' + data.media.coverUri,
-                featuredUri: '/' + data.media.featuredUri,
+                coverUri: dlBaseUrl + data.media.coverUri,
+                featuredUri: dlBaseUrl + data.media.featuredUri,
             },
             ...(data.children
                 ? {

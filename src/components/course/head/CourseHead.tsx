@@ -71,7 +71,7 @@ const CourseHead: React.FC<{
                         width={320}
                         height={180}
                         layout={'responsive'}
-                        objectFit={'cover'}
+                        objectFit={'contain'}
                         className={'image-border-8'}
                         priority
                     />
@@ -95,7 +95,7 @@ const CourseHead: React.FC<{
                             bullet.type === courseIcon.instructor &&
                             course.instructor
                         ) {
-                            content = `${course.instructor.firstName} ${course.instructor.firstName}`;
+                            content = `${course.instructor.firstName} ${course.instructor.lastName}`;
                         }
 
                         return (
@@ -193,7 +193,7 @@ const CourseHead: React.FC<{
                         alt={course.title}
                         width={362}
                         height={205}
-                        objectFit={'cover'}
+                        objectFit={'contain'}
                         layout={'responsive'}
                         className={'image-border-8'}
                         priority
