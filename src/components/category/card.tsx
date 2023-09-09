@@ -34,7 +34,7 @@ const CategoryCard: React.FC<{
                 alt={category.title}
                 width={50}
                 height={50}
-                objectFit={'cover'}
+                // objectFit={'cover'}
             />
             <Typography variant='h6' sx={{ mr: 3 }} color={'text.primary'}>
                 {category.title}

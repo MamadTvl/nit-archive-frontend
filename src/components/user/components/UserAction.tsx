@@ -24,9 +24,6 @@ const UserAction = () => {
 
     useEffect(() => {
         setUser();
-        Api.Instance.getUserCourses().then((c) => {
-            console.log(c);
-        });
     }, [setUser]);
 
     return (

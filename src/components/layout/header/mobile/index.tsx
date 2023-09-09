@@ -41,14 +41,12 @@ const MobileHeader = () => {
                     <DrawerIcon />
                 </IconButton>
                 <Menu open={open} setOpen={setOpen} />
-                <Link
-                    href={'/'}
-                    sx={{ marginRight: '46px', marginTop: '10px' }}>
+                <Link href={'/'}>
                     <Image
                         src={'/logo.png'}
                         alt={'نیت‌آرشیو'}
-                        width={50}
-                        height={65}
+                        width={25}
+                        height={32.5}
                     />
                 </Link>
                 <UserAction />

@@ -2,12 +2,14 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { UserActionProps } from '../../UserAction';
 import Avatar from '../../../../avatar/Avatar';
 import { useUserStore } from '@/components/user/store/store';
+import { useRouter } from 'next/router';
 
 const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
     const [user, openLoginDialog] = useUserStore((s) => [
         s.user,
         s.openLoginDialog,
     ]);
+    const router = useRouter();
     return (
         <Box
             sx={(theme) => ({
@@ -19,7 +21,11 @@ const MobileUserAction: React.FC<UserActionProps> = ({ loginButtonState }) => {
             })}>
             <Box
                 onClick={() => {
-                    openLoginDialog(true);
+                    if (user) {
+                        router.push('/dashboard/info');
+                    } else {
+                        openLoginDialog(true);
+                    }
                 }}
                 display={'flex'}
                 alignItems={'center'}
